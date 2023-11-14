@@ -11,6 +11,12 @@ router.get('/get', async (req, res) => {
         htrans
     })
 })
+router.get('/total', async (req, res) => {
+    let subtotal = await Htrans.sum('subtotal')
+    return res.status(200).send({
+        subtotal
+    })
+})
 router.post('/:nama/:menu/:jumlah/:subtotal', async (req, res) => {
     const { nama, menu, jumlah, subtotal } = req.params
     let result
