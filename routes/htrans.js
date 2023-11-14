@@ -28,17 +28,6 @@ router.get('/total', async (req, res) => {
         subtotal
     })
 })
-router.get('/total/:date', async (req, res) => {
-    const {date} = req.params
-    let subtotal = await Htrans.sum('subtotal', {
-        where:{
-            tanggal:date
-        }
-    })
-    return res.status(200).send({
-        subtotal
-    })
-})
 router.post('/:nama/:menu/:jumlah/:subtotal', async (req, res) => {
     const { nama, menu, jumlah, subtotal } = req.params
     let result
