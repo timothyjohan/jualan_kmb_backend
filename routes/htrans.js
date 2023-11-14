@@ -3,6 +3,7 @@ const { query } = require('express');
 const express = require('express');
 const router = express.Router();
 const Htrans = require('../models/Htrans');
+const { DATEONLY } = require('sequelize');
 
 router.get('/get', async (req, res) => {
     let htrans = await Htrans.findAll()
@@ -15,12 +16,19 @@ router.post('/:nama/:menu/:jumlah/:subtotal', async (req, res) => {
     let result
     let tempId = await Htrans.count() + 1
     try {
+        let year = new Date().getFullYear()
+        let month = new Date().getMonth() +1
+        let date = new Date().getDate()
+        let tanggal = `${year}-${month}-${date}`
+        console.log(tanggal);
         result = await Htrans.create({
             id: tempId,
             nama:nama,
             menu:menu,
             jumlah:jumlah,
-            subtotal:subtotal
+            subtotal:subtotal,
+            tanggal: tanggal
+
         })
     } catch (error) {
         return res.status(500).send(error)

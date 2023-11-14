@@ -29,6 +29,11 @@ Htrans.init(
             primaryKey: true,
             allowNull: false,
         },
+        tanggal: {
+            type: DataTypes.DATE,
+            primaryKey: true,
+            allowNull: false,
+        },
     },
     {
         sequelize,
