@@ -11,6 +11,17 @@ router.get('/get', async (req, res) => {
         htrans
     })
 })
+router.get('/get/:date', async (req, res) => {
+    const {date} = req.params
+    let htrans = await Htrans.findAll({
+        where:{
+            tanggal:date
+        }
+    })
+    return res.status(200).send({
+        htrans
+    })
+})
 router.get('/total', async (req, res) => {
     let subtotal = await Htrans.sum('subtotal')
     return res.status(200).send({
