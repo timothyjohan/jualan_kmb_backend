@@ -25,6 +25,18 @@ const htransSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    jenis_pembayaran: {
+        type: String,
+        required: true,
+    },
+    bayar: {
+        type: Boolean,
+        required: true,
+    },
+    delivered: {
+        type: Boolean,
+        required: true,
+    }
 }, {
     collection: 'htrans',
     timestamps: false,

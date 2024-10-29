@@ -49,9 +49,10 @@ router.get('/total/:date', async (req, res) => {
     }
 });
 
-router.post('/:nama/:menu/:jumlah/:subtotal', async (req, res) => {
-    const { nama, menu, jumlah, subtotal } = req.params;
+router.post('/order', async (req, res) => {
+    const { nama, menu, jumlah, subtotal, jenis_pembayaran, bayar} = req.body;
     try {
+        let delivered = false;
         let year = new Date().getFullYear();
         let month = new Date().getMonth() + 1;
         let date = new Date().getDate();
@@ -62,7 +63,10 @@ router.post('/:nama/:menu/:jumlah/:subtotal', async (req, res) => {
             menu: menu,
             jumlah: jumlah,
             subtotal: subtotal,
-            tanggal: tanggal
+            tanggal: tanggal,
+            jenis_pembayaran: jenis_pembayaran,
+            bayar: bayar,
+            delivered: delivered
         });
         return res.status(201).send({ result });
     } catch (error) {
