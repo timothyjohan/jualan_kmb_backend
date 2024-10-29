@@ -1,45 +1,35 @@
-const { getDB } = require("../config/sequelize");
-const sequelize = getDB();
-const { Model, DataTypes } = require("sequelize");
+const mongoose = require('mongoose');
 
-class Htrans extends Model { }
-Htrans.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        nama: {
-            type: DataTypes.STRING,
-            primaryKey: true,
-            allowNull: false,
-        },
-        menu: {
-            type: DataTypes.STRING,
-            primaryKey: true,
-            allowNull: false,
-        },
-        jumlah: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-        },
-        subtotal: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-        },
-        tanggal: {
-            type: DataTypes.DATE,
-            primaryKey: true,
-            allowNull: false,
-        },
+const htransSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        required: true,
     },
-    {
-        sequelize,
-        timestamps: false,
-        modelName: "Htrans",
-        tableName: "htrans",
-    }
-),
-    module.exports = Htrans
+    nama: {
+        type: String,
+        required: true,
+    },
+    menu: {
+        type: String,
+        required: true,
+    },
+    jumlah: {
+        type: Number,
+        required: true,
+    },
+    subtotal: {
+        type: Number,
+        required: true,
+    },
+    tanggal: {
+        type: Date,
+        required: true,
+    },
+}, {
+    collection: 'htrans',
+    timestamps: false,
+});
+
+const Htrans = mongoose.model('Htrans', htransSchema);
+
+module.exports = Htrans;
