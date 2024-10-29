@@ -9,37 +9,47 @@ const htransSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    menu: {
-        type: String,
-        required: true,
-    },
-    jumlah: {
+    menu: [{
+        nama_menu: {
+            type: String,
+            required: true
+        },
+        jumlah: {
+            type: Number,
+            required: true
+        },
+        harga: {
+            type: Number,
+            required: true
+        },
+        subtotal: {
+            type: Number,
+            required: true
+        }
+    }],
+    total: {
         type: Number,
-        required: true,
-    },
-    subtotal: {
-        type: Number,
-        required: true,
+        required: true
     },
     tanggal: {
         type: Date,
+        default: Date.now,
         required: true,
     },
     jenis_pembayaran: {
         type: String,
-        required: true,
-    },
-    bayar: {
-        type: Boolean,
+        enum: ['Tunai', 'Transfer', 'Belom Bayar'],
+        default: 'Belom Bayar',
         required: true,
     },
     delivered: {
         type: Boolean,
+        default: false,
         required: true,
     }
 }, {
     collection: 'htrans',
-    timestamps: false,
+    timestamps: true,
 });
 
 const Htrans = mongoose.model('Htrans', htransSchema);
