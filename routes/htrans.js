@@ -74,4 +74,45 @@ router.post('/order', async (req, res) => {
     }
 });
 
+//Change status bayar to true
+router.put('/bayar/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        let htrans = await Htrans.findByIdAndUpdate(id, { bayar: true }, { new: true });
+        if (!htrans) {
+            return res.status(404).send({ message: 'Transaction not found' });
+        }
+        return res.status(200).send({ htrans });
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+});
+
+//Change status delivered to true
+router.put('/delivered/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        let htrans = await Htrans.findByIdAndUpdate(id, { delivered: true }, { new: true });
+        if (!htrans) {
+            return res.status(404).send({ message: 'Transaction not found' });
+        }
+        return res.status(200).send({ htrans });
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+});
+
+router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        let htrans = await Htrans.findByIdAndDelete(id);
+        if (!htrans) {
+            return res.status(404).send({ message: 'Transaction not found' });
+        }
+        return res.status(200).send({ message: 'Transaction deleted successfully' });
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+});
+
 module.exports = router
