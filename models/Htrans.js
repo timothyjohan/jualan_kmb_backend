@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const htransSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true,
     },
     nama: {
         type: String,
