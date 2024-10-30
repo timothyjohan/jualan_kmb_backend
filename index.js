@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api', htrans);
+app.use('/api/htrans', htrans);
 app.get('/', (req, res) => res.send('Hello World!'));
 
 // MongoDB Connection
