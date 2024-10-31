@@ -80,10 +80,12 @@ router.put('/bayar/:id', async (req, res) => {
 router.put('/delivered/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        let htrans = await Htrans.findByIdAndUpdate(id, { delivered: true }, { new: true });
+        let htrans = await Htrans.findById(id);
         if (!htrans) {
             return res.status(404).send({ message: 'Transaction not found' });
         }
+        htrans.delivered = !htrans.delivered;
+        await htrans.save();
         return res.status(200).send({ htrans });
     } catch (error) {
         return res.status(500).send(error);
