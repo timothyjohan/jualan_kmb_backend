@@ -1,5 +1,3 @@
-const { default: axios } = require('axios');
-const { query } = require('express');
 const express = require('express');
 const router = express.Router();
 const Htrans = require('../models/Htrans');
@@ -50,35 +48,25 @@ router.get('/total/:date', async (req, res) => {
 });
 
 router.post('/order', async (req, res) => {
-    const { nama, menu, jumlah, subtotal, jenis_pembayaran, bayar} = req.body;
     try {
-        let delivered = false;
-        let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1;
-        let date = new Date().getDate();
-        let tanggal = `${year}-${month}-${date}`;
-        console.log(tanggal);
-        let result = await Htrans.create({
-            nama: nama,
-            menu: menu,
-            jumlah: jumlah,
-            subtotal: subtotal,
-            tanggal: tanggal,
-            jenis_pembayaran: jenis_pembayaran,
-            bayar: bayar,
-            delivered: delivered
-        });
-        return res.status(201).send({ result });
+        console.log('Received order data:', req.body);
+        const newOrder = new Htrans(req.body);
+        const savedOrder = await newOrder.save();
+        console.log('Order saved:', savedOrder);
+        res.status(201).json(savedOrder);
+        console.log("Berhasil");
     } catch (error) {
-        return res.status(500).send(error);
+        console.error('Error saving order:', error);
+        res.status(400).json({ message: error.message });
     }
 });
 
 //Change status bayar to true
 router.put('/bayar/:id', async (req, res) => {
     const { id } = req.params;
+    const {jenis_pembayaran} = req.body;
     try {
-        let htrans = await Htrans.findByIdAndUpdate(id, { bayar: true }, { new: true });
+        let htrans = await Htrans.findByIdAndUpdate(id, { bayar: true, jenis_pembayaran: jenis_pembayaran }, { new: true });
         if (!htrans) {
             return res.status(404).send({ message: 'Transaction not found' });
         }
@@ -92,10 +80,12 @@ router.put('/bayar/:id', async (req, res) => {
 router.put('/delivered/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        let htrans = await Htrans.findByIdAndUpdate(id, { delivered: true }, { new: true });
+        let htrans = await Htrans.findById(id);
         if (!htrans) {
             return res.status(404).send({ message: 'Transaction not found' });
         }
+        htrans.delivered = !htrans.delivered;
+        await htrans.save();
         return res.status(200).send({ htrans });
     } catch (error) {
         return res.status(500).send(error);
