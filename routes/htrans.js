@@ -64,8 +64,9 @@ router.post('/order', async (req, res) => {
 //Change status bayar to true
 router.put('/bayar/:id', async (req, res) => {
     const { id } = req.params;
+    const {jenis_pembayaran} = req.body;
     try {
-        let htrans = await Htrans.findByIdAndUpdate(id, { bayar: true }, { new: true });
+        let htrans = await Htrans.findByIdAndUpdate(id, { bayar: true, jenis_pembayaran: jenis_pembayaran }, { new: true });
         if (!htrans) {
             return res.status(404).send({ message: 'Transaction not found' });
         }
