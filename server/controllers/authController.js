@@ -1,10 +1,10 @@
 const User = require('../models/User')
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { username, password } = req.body;
     
-    // Check if user already exists
+    // Check if user exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ 
@@ -14,74 +14,101 @@ exports.register = async (req, res) => {
     }
 
     // Create new user
-    const user = await User.create({ username, password });
+    const user = new User({ username, password });
+    const token = await user.generateAuthToken();
 
     res.status(201).json({
       success: true,
       message: 'Registrasi berhasil',
-      user: {
-        id: user._id,
-        username: user.username
-      }
+      token
     });
   } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: 'Terjadi kesalahan', 
-      error: error.message 
+      message: 'Gagal melakukan registrasi',
+      error: error.message
     });
   }
 };
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check if user exists
+    // Find user
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'Username atau password salah' 
+        message: 'Username atau password salah'
       });
     }
 
     // Verify password
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ 
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({
         success: false,
-        message: 'Username atau password salah' 
+        message: 'Username atau password salah'
       });
     }
+
+    // Generate token
+    const token = await user.generateAuthToken();
 
     res.json({
       success: true,
       message: 'Login berhasil',
-      user: {
-        id: user._id,
-        username: user.username
-      }
+      token
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: 'Terjadi kesalahan', 
-      error: error.message 
+      message: 'Gagal melakukan login',
+      error: error.message
     });
   }
 };
 
-// Tambahkan endpoint logout
-exports.logout = async (req, res) => {
+const logout = async (req, res) => {
   try {
-    await req.user.removeToken();
-    res.json({ message: 'Logout berhasil' });
+    // Remove current token
+    req.user.tokens = req.user.tokens.filter(token => token.token !== req.token);
+    await req.user.save();
+
+    res.json({
+      success: true,
+      message: 'Logout berhasil'
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Terjadi kesalahan', error: error.message });
+    res.status(500).json({
+      success: false,
+      message: 'Gagal melakukan logout',
+      error: error.message
+    });
   }
+};
+
+const validate = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      message: 'Token valid'
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: 'Token tidak valid',
+      error: error.message
+    });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+  validate
 };
 
 // Middleware untuk proteksi route
