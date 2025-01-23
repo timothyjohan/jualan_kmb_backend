@@ -23,27 +23,20 @@ const htransSchema = new mongoose.Schema({
   },
   tanggal: {
     type: String,
-    required: true
+    required: true,
+    default: () => new Date().toISOString().split('T')[0]
   },
   jenis_pembayaran: {
     type: String,
-    enum: ['belum', 'tunai', 'transfer'],
-    default: 'belum'
+    enum: ['pending', 'tunai', 'transfer'],
+    default: 'pending'
   },
   delivered: {
     type: Boolean,
     default: false
   }
 }, {
-  strict: true,
   timestamps: true
-});
-
-htransSchema.pre('save', function(next) {
-  if (typeof this.menu !== 'string') {
-    next(new Error('Menu harus berupa string'));
-  }
-  next();
 });
 
 const Htrans = mongoose.model('Htrans', htransSchema);

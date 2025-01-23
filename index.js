@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 
 const app = express();
-const htrans = require('./routes/htrans');
+const htrans = require('./server/routes/htrans');
 
 // Middleware
 app.use(cors());
